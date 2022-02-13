@@ -2,10 +2,14 @@ import './App.css';
 import Grid from '@material-ui/core/Grid';
 import MaterialTable from 'material-table'
 import { Avatar } from '@material-ui/core';
+import {useState , useEffect} from 'react';
+import axios from 'axios';
 
 
 
-
+const api = axios.create({
+    baseURL: `https://reqres.in/api/users?page=1`
+})
 
 function App() {
     var columns = [
@@ -16,6 +20,19 @@ function App() {
     {title: "Mail ID", field: "email"}
   ]
 
+  const [data , setData] = useState([])
+
+  const [iserror, setIserror] = useState(false)
+  const [errorMessages, setErrorMessages] = useState([])
+
+  useEffect(()=>{
+    api.get("/users")
+      .then(res=>{
+        setData(res.data.data)
+      })
+  })
+
+
   return (
     <div className="App">
        <Grid item xs={3} ></Grid>
@@ -24,7 +41,7 @@ function App() {
             title="Infilon Assignment"
             columns={columns}
             data={data}
-            icons={tableIcons}
+            
 
         
         ></MaterialTable>
