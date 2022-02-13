@@ -74,6 +74,43 @@ function App() {
       })
   })
 
+  const addNewRows = (newData , resolve)=>{
+    
+    let errorList = []
+    if(newData.first_name === undefined){
+      errorList.push("Please enter first name")
+    }
+    if(newData.last_name === undefined){
+      errorList.push("Please enter last name")
+    }
+    if(newData.email === undefined || validateEmail(newData.email) === false){
+      errorList.push("Please enter a valid email")
+    }
+
+    if(errorList.length < 1){ //no error
+      api.post("/users", newData)
+      .then(res => {
+        let dataToAdd = [...data];
+        dataToAdd.push(newData);
+        setData(dataToAdd);
+        resolve()
+        setErrorMessages([])
+        setIserror(false)
+      })
+      .catch(error => {
+        setErrorMessages(["Cannot add data. Server error!"])
+        setIserror(true)
+        resolve()
+      })
+    }else{
+      setErrorMessages(errorList)
+      setIserror(true)
+      resolve()
+    }
+
+  
+
+  }
 
   return (
     <div className="App">
