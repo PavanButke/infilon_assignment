@@ -107,10 +107,27 @@ function App() {
       setIserror(true)
       resolve()
     }
+  }
 
+    const deleteUsers = (oldData, resolve) => {
+    
+      api.delete("/users/"+oldData.id)
+      .then(res => {
+        const dataDelete = [...data];
+        const index = oldData.tableData.id;
+        dataDelete.splice(index, 1);
+        setData([...dataDelete]);
+        resolve()
+      })
+      .catch(error => {
+        setErrorMessages(["Delete failed! Server error"])
+        setIserror(true)
+        resolve()
+      })
+    }
   
 
-  }
+  
 
   return (
     <div className="App">
@@ -122,12 +139,19 @@ function App() {
             data={data}
             icons={tabiconsSet}
             editable={{
-              onRowAdd:(newData)=>{
+              onRowAdd:(newData)=>
                 new Promise((resolve)=>{
                   addNewRows(newData , resolve);
-                })
-              }
-            }}
+                }),
+                onRowDelete: (oldData) =>
+                new Promise((resolve) => {
+                  deleteUsers(oldData, resolve);
+                }),
+
+
+                
+              
+}}
 
         ></MaterialTable>
 
