@@ -98,7 +98,7 @@ function App() {
         setIserror(false)
       })
       .catch(error => {
-        setErrorMessages(["Cannot add data. Server error!"])
+        setErrorMessages(["Cannot add data"])
         setIserror(true)
         resolve()
       })
@@ -126,6 +126,44 @@ function App() {
       })
     }
   
+    const editData = (newData, oldData, resolve) => {
+     
+      let errorList = []
+      if(newData.first_name === ""){
+        errorList.push("Please enter first name")
+      }
+      if(newData.last_name === ""){
+        errorList.push("Please enter last name")
+      }
+      if(newData.email === "" || validateEmail(newData.email) === false){
+        errorList.push("Please enter a valid email")
+      }
+  
+      if(errorList.length < 1){
+        api.patch("/users/"+newData.id, newData)
+        .then(res => {
+          const dataUpdate = [...data];
+          const index = oldData.tableData.id;
+          dataUpdate[index] = newData;
+          setData([...dataUpdate]);
+          resolve()
+          setIserror(false)
+          setErrorMessages([])
+        })
+        .catch(error => {
+          setErrorMessages(["Update failed! Server error"])
+          setIserror(true)
+          resolve()
+          
+        })
+      }else{
+        setErrorMessages(errorList)
+        setIserror(true)
+        resolve()
+  
+      }
+      
+    }
 
   
 
@@ -147,7 +185,11 @@ function App() {
                 new Promise((resolve) => {
                   deleteUsers(oldData, resolve);
                 }),
-
+                onRowUpdate: (newData, oldData) =>
+                new Promise((resolve) => {
+                    editData(newData, oldData, resolve);
+                    
+                }),
 
                 
               
