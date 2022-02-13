@@ -121,8 +121,14 @@ function App() {
             columns={columns}
             data={data}
             icons={tabiconsSet}
+            editable={{
+              onRowAdd:(newData)=>{
+                new Promise((resolve)=>{
+                  addNewRows(newData , resolve);
+                })
+              }
+            }}
 
-        
         ></MaterialTable>
 
        </Grid>
